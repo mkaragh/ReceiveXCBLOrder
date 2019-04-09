@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: receivexcblorder
-        image: mkadocker/receivexcblorder
+        image: mkadocker/receivexcblorder:BUILD_ID_PLACEHOLDER
         imagePullPolicy: Always
         ports:
         - containerPort: 8082
