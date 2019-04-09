@@ -18,7 +18,7 @@ import rrn.org_xcbl.schemas.xcbl.v3_5.xcbl35.Order;
 public class XmlObjectUtil {
 	
 	
-    // comment to trigger build
+    // comment to trigger build and release
     
     public static Order getXCBLOrderFromXML(String xmlString) {
         try {
