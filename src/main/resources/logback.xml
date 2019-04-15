@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration  scan="true" scanPeriod="5 seconds" >        
+
+  <appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+    <syslogHost>40.76.30.233</syslogHost>
+        <port>25826</port>
+    <facility>LOCAL1</facility>
+    <suffixPattern>[%thread] %logger %msg</suffixPattern>
+  </appender>
+
+        <root level="INFO">             
+                <appender-ref ref="SYSLOG" />
+        </root>
+
+</configuration>

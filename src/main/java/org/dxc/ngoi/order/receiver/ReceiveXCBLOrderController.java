@@ -33,6 +33,9 @@ public class ReceiveXCBLOrderController {
 	@PostMapping(path="/receive") // Map ONLY POST Requests
 	public String receiveOrder (@RequestBody String orderXML) {	
 	
+		  for (int i = 100; i < 110; i++) {
+		      logger.info("Log is coming " + i);
+		    }
 				
 		Order xcblOrder = XmlObjectUtil.getXCBLOrderFromXML(orderXML);
 		
