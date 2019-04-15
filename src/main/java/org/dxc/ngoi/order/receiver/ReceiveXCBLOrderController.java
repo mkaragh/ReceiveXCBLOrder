@@ -45,7 +45,8 @@ public class ReceiveXCBLOrderController {
 	    
 		this.kafkaProducer.sendMessage(topic, orderXML);
 		
-		return XmlObjectUtil.getXMLStringFromXCBLOrder(xcblOrder);
+		// return XmlObjectUtil.getXMLStringFromXCBLOrder(xcblOrder);
+		return "Order received successfuly" ;
 	}
 	
 
