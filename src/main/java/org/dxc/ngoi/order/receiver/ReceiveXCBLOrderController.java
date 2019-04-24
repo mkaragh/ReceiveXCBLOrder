@@ -47,7 +47,6 @@ public class ReceiveXCBLOrderController {
 		
 		// return XmlObjectUtil.getXMLStringFromXCBLOrder(xcblOrder);
 		return "Order received successfuly" ;
-	}
-	
+	}	
 
 }
