@@ -41,7 +41,7 @@ public class ReceiveXCBLOrderController {
 		
 		//String orderXML = XmlObjectUtil.objectToXml(order);
 		
-		System.out.println(orderXML);
+		//System.out.println(orderXML);
 	    
 		this.kafkaProducer.sendMessage(topic, orderXML);
 		
