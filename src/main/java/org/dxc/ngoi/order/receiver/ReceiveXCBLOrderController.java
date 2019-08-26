@@ -1,8 +1,10 @@
 package org.dxc.ngoi.order.receiver;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,26 +30,45 @@ public class ReceiveXCBLOrderController {
 
     @Value("${cloudkarafka.topic}")
     private String topic;
+    
+    @Autowired
+    private TransactionDataServiceClient transactionDataServiceClient;
 	
 	
 	@PostMapping(path="/receive") // Map ONLY POST Requests
-	public String receiveOrder (@RequestBody String orderXML) {	
-	
-		  for (int i = 100; i < 110; i++) {
-		      logger.info("Log is coming " + i);
-		    }
+	public String receiveOrder (@RequestBody String orderXML) {			
 				
-		Order xcblOrder = XmlObjectUtil.getXCBLOrderFromXML(orderXML);
-		
-		//String orderXML = XmlObjectUtil.objectToXml(order);
-		
+		Order xcblOrder = XmlObjectUtil.getXCBLOrderFromXML(orderXML);		
+		//String orderXML = XmlObjectUtil.objectToXml(order);		
 		//System.out.println(orderXML);
-	    
-		this.kafkaProducer.sendMessage(topic, orderXML);
+	    try {
+	    	
+	    	this.kafkaProducer.sendMessage(topic, orderXML);
+	    	
+	    } catch(Exception ex)	    
+	    {
+	    	return "Order not received. Please resubmit" ;	    }
 		
 		// return XmlObjectUtil.getXMLStringFromXCBLOrder(xcblOrder);
 		return "Order received successfuly" ;
-	}	
+	}
+	
+	private String getFormatedDate(String pattern) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		return simpleDateFormat.format(new Date());
+			
+	}
+	
+	private boolean saveOrderInTransactionLog(String orderXML) {
+
+	    TransactionLog transactionLog = new TransactionLog();
+        transactionLog.setRequestMsg(orderXML);
+        transactionLog.setReceivedDate(getFormatedDate("yyyy-MM-dd HH:mm:ss")); //
+        transactionDataServiceClient.addNewTransactionLog(transactionLog);
+        
+        return true;
+		
+	}
 	
 
 }
