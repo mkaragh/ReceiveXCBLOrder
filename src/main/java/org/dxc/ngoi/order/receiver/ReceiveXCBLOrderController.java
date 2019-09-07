@@ -37,18 +37,41 @@ public class ReceiveXCBLOrderController {
 	
 	@PostMapping(path="/receive") // Map ONLY POST Requests
 	public String receiveOrder (@RequestBody String orderXML) {			
-				
-		Order xcblOrder = XmlObjectUtil.getXCBLOrderFromXML(orderXML);		
-		//String orderXML = XmlObjectUtil.objectToXml(order);		
-		//System.out.println(orderXML);
+		
+		Order xcblOrder;
+		
+		try {
+			
+			xcblOrder = XmlObjectUtil.getXCBLOrderFromXML(orderXML);
+			
+		} catch(Exception ex){
+			
+	    	return "Order not received. Invalid XCBL order. Please resubmit" ;	   
+	    }
+		
 	    try {
-	    	
 	    	this.kafkaProducer.sendMessage(topic, orderXML);
 	    	
-	    } catch(Exception ex)	    
-	    {
-	    	return "Order not received. Please resubmit" ;	    }
+	    } catch(Exception ex){
+	    	return "Order not received. Please resubmit" ;	   
+	    }
+	    
+	    String orderNumber;
+	    
+	    try {
+	    	 
+			 orderNumber = xcblOrder.getOrderHeader().getOrderNumber().getBuyerOrderNumber();
+			 TransactionLog transactionLog = new TransactionLog();
+			 transactionLog.setRequestMsg(orderXML);
+			 transactionLog.setReceivedDate(getFormatedDate("yyyy-MM-dd HH:mm:ss"));
+			 transactionLog.setCustomerPonbr(orderNumber);			 
+			 transactionDataServiceClient.addNewTransactionLog(transactionLog);
+			 
+	    } catch(Exception ex){
+	    	logger.debug("Order "+orderNumber+" not saved in transaction_log table");	   
+	    }
 		
+	   
 		// return XmlObjectUtil.getXMLStringFromXCBLOrder(xcblOrder);
 		return "Order received successfuly" ;
 	}
@@ -57,18 +80,7 @@ public class ReceiveXCBLOrderController {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		return simpleDateFormat.format(new Date());
 			
-	}
-	
-	private boolean saveOrderInTransactionLog(String orderXML) {
-
-	    TransactionLog transactionLog = new TransactionLog();
-        transactionLog.setRequestMsg(orderXML);
-        transactionLog.setReceivedDate(getFormatedDate("yyyy-MM-dd HH:mm:ss")); //
-        transactionDataServiceClient.addNewTransactionLog(transactionLog);
-        
-        return true;
-		
-	}
+	}	
 	
 
 }

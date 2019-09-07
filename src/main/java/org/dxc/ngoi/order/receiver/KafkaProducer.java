@@ -32,7 +32,7 @@ public class KafkaProducer {
         try
         {
         	
-        	ListenableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(topic, message);
+        	ListenableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(topic, message);        	
         	this.kafkaTemplate.flush();
         	SendResult<String, String> sendResult = future.get();
         	RecordMetadata recordMetaData = sendResult.getRecordMetadata();
