@@ -28,7 +28,7 @@ public class ReceiveXCBLOrderController {
 	private KafkaProducer kafkaProducer;
 	
 
-    @Value("${cloudkarafka.topic}")
+    @Value("${xcblorder.topic}")
     private String topic;
     
     @Autowired
@@ -56,7 +56,7 @@ public class ReceiveXCBLOrderController {
 	    	return "Order not received. Please resubmit" ;	   
 	    }
 	    
-	    String orderNumber;
+	    String orderNumber=null;
 	    
 	    try {
 	    	 
@@ -69,8 +69,7 @@ public class ReceiveXCBLOrderController {
 			 
 	    } catch(Exception ex){
 	    	logger.debug("Order "+orderNumber+" not saved in transaction_log table");	   
-	    }
-		
+	    }		
 	   
 		// return XmlObjectUtil.getXMLStringFromXCBLOrder(xcblOrder);
 		return "Order received successfuly" ;
